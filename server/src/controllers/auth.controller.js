@@ -3,12 +3,14 @@ import { generateToken } from "../utils/jwt.js";
 import { validateSignupData, validateLoginData } from "../utils/validation.js";
 import passport from "../config/passport.js";
 
+// =============================
 // Email/Password Signup
+// =============================
 export const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // Validate input data
+    // Validate input
     const validation = validateSignupData(req.body);
     if (!validation.isValid) {
       return res.status(400).json({
@@ -18,7 +20,7 @@ export const signup = async (req, res) => {
       });
     }
 
-    // Check if user already exists
+    // Check existing user
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(409).json({
@@ -34,11 +36,10 @@ export const signup = async (req, res) => {
       password,
       role: role || "founder",
     });
-
     await user.save();
 
-    // Generate JWT token
-    const token = generateToken(user.toJWT());
+    // ✅ Fix: pass full user (not user.toJWT()) into generateToken
+    const token = generateToken(user);
 
     res.status(201).json({
       success: true,
@@ -49,7 +50,6 @@ export const signup = async (req, res) => {
   } catch (error) {
     console.error("Signup error:", error);
 
-    // Handle duplicate key error
     if (error.code === 11000) {
       return res.status(409).json({
         success: false,
@@ -64,9 +64,10 @@ export const signup = async (req, res) => {
   }
 };
 
+// =============================
 // Email/Password Login
+// =============================
 export const login = async (req, res, next) => {
-  // Validate input data
   const validation = validateLoginData(req.body);
   if (!validation.isValid) {
     return res.status(400).json({
@@ -92,8 +93,8 @@ export const login = async (req, res, next) => {
       });
     }
 
-    // Generate JWT token
-    const token = generateToken(user.toJWT());
+    // ✅ Fix: pass full user (not user.toJWT()) into generateToken
+    const token = generateToken(user);
 
     res.json({
       success: true,
@@ -104,7 +105,9 @@ export const login = async (req, res, next) => {
   })(req, res, next);
 };
 
+// =============================
 // Get Current User (Protected Route)
+// =============================
 export const getMe = async (req, res) => {
   try {
     res.json({
@@ -120,13 +123,12 @@ export const getMe = async (req, res) => {
   }
 };
 
-// Google OAuth Success Handler
+// =============================
+// Google OAuth Callback
+// =============================
 export const googleCallback = async (req, res) => {
   try {
-    // Generate JWT token
-    const token = generateToken(req.user.toJWT());
-
-    // Redirect to frontend with token
+    const token = generateToken(req.user);
     const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
     res.redirect(`${frontendURL}/auth/callback?token=${token}`);
   } catch (error) {
@@ -136,16 +138,19 @@ export const googleCallback = async (req, res) => {
   }
 };
 
-// Logout (Client-side token removal)
+// =============================
+// Logout
+// =============================
 export const logout = (req, res) => {
   res.json({
     success: true,
-    message:
-      "Logout successful. Please remove the token from client-side storage.",
+    message: "Logout successful. Please remove the token from client-side storage.",
   });
 };
 
+// =============================
 // Update User Profile
+// =============================
 export const updateProfile = async (req, res) => {
   try {
     const { name, role } = req.body;

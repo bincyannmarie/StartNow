@@ -4,6 +4,7 @@ import { connectDB } from "./db/connectDB.js";
 import authRouter from "./routes/auth.route.js";
 import startupRouter from "./routes/startup.route.js";
 import investmentRouter from "./routes/investment.route.js";
+import investorRoutes from "./routes/investor.js"; // ✅ move this import up
 
 const PORT = process.env.PORT || 8080;
 
@@ -26,10 +27,11 @@ app.get("/", (req, res) => {
   });
 });
 
-// API Routes
+// ✅ Register API Routes before app.listen()
 app.use("/auth", authRouter);
 app.use("/api/startups", startupRouter);
 app.use("/api/investments", investmentRouter);
+app.use("/api/investor", investorRoutes); // ✅ investor routes active now
 
 // Health check for API
 app.get("/api/health", (req, res) => {
@@ -61,6 +63,9 @@ app.use((err, req, res, next) => {
     ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
 });
+
+import investorRouter from "./routes/investor.route.js";
+app.use("/api/investor", investorRouter);
 
 app.listen(PORT, () => {
   console.log(`🎯 Server is running on port ${PORT}`);

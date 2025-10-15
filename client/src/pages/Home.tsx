@@ -279,7 +279,7 @@ const Home: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-1 md:col-span-2">
-              <h3 className="text-2xl font-bold text-white mb-4">StartNow</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">PitchScore</h3>
               <p className="text-gray-300 mb-6 max-w-md">
                 The future of startup funding is here. Join thousands of
                 entrepreneurs and investors building the next generation of

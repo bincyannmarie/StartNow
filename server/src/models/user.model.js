@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
+    // Common fields for all users
     name: {
       type: String,
       required: true,
@@ -25,11 +26,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       sparse: true, // Allows multiple null values but unique non-null values
     },
+
+    // Role management
     role: {
       type: String,
       enum: ["founder", "investor", "community"],
       default: "founder",
     },
+
+    // Profile / common fields
     avatar: {
       type: String,
     },
@@ -49,6 +54,8 @@ const userSchema = new mongoose.Schema(
     twitter: {
       type: String,
     },
+
+    // 🧩 Investor-specific fields
     investmentPreferences: {
       industries: [
         {
@@ -77,6 +84,16 @@ const userSchema = new mongoose.Schema(
         type: Number,
       },
     },
+
+    // 🧠 Save pitches that an investor has shown interest in
+    interestedPitches: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Pitch",
+      },
+    ],
+
+    // System / verification flags
     isVerified: {
       type: Boolean,
       default: false,
@@ -89,7 +106,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Hash password before saving
+//
+// 🔐 Password Hashing Middleware
+//
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password") || !this.password) return next();
   try {
@@ -101,13 +120,17 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-// Compare password method
+//
+// 🧮 Compare Passwords
+//
 userSchema.methods.comparePassword = async function (candidatePassword) {
   if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Generate JWT payload
+//
+// 🪪 Generate JWT Payload
+//
 userSchema.methods.toJWT = function () {
   return {
     id: this._id,
@@ -119,6 +142,8 @@ userSchema.methods.toJWT = function () {
   };
 };
 
+//
+// ✅ Export Model
+//
 const User = mongoose.model("User", userSchema);
-
 export default User;

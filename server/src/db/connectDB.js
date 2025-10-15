@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const MONGO_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/StartNow";
+  process.env.MONGODB_URI || "mongodb://localhost:27017/pitchscore";
 
 async function connectDB() {
   try {

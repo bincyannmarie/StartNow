@@ -29,12 +29,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const isHomePage = location.pathname === "/";
 
-  // State for sliding underline animation
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
   const navContainerRef = useRef<HTMLDivElement>(null);
   const navItemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
-  // Update underline position when route changes
   useEffect(() => {
     const updateUnderlinePosition = () => {
       const activeIndex = navigation.findIndex(
@@ -56,7 +54,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     };
 
-    // Small delay to ensure DOM is updated
     const timer = setTimeout(updateUnderlinePosition, 50);
     return () => clearTimeout(timer);
   }, [location.pathname, navigation]);
@@ -66,7 +63,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Navigation */}
       <nav className="fixed top-10 left-4 right-4 z-50">
         <div className="max-w-7xl mx-auto">
-          {/* Navigation bar */}
           <div className="bg-gray-900/95 backdrop-blur-md rounded-3xl border border-gray-700/50 px-8 py-4 shadow-2xl shadow-black/20">
             <div className="flex justify-between items-center">
               {/* Logo */}
@@ -76,11 +72,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               >
                 <img
                   src="/ChatGPT Image Jul 6, 2025, 02_47_45 AM.png"
-                  alt="StartNow Logo"
+                  alt="PitchScore Logo"
                   className="w-10 h-10 rounded-full bg-white/10 p-1 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"
                 />
                 <h1 className="text-2xl font-display font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent hover:from-yellow-200 hover:via-yellow-100 hover:to-white transition-all duration-300">
-                  StartNow
+                  PitchScore
                 </h1>
               </Link>
 
@@ -126,6 +122,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="hidden md:flex items-center space-x-2">
                 {!isLoggedIn ? (
                   <>
+                    {/* Default Login */}
                     <button
                       onClick={() => {
                         setAuthModalType("login");
@@ -135,6 +132,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     >
                       Log In
                     </button>
+
+                    {/* ✅ Investor Login Link */}
+                    <Link
+                      to="/investor-login"
+                      className="text-green-400 hover:text-white hover:bg-green-700/60 px-5 py-2.5 rounded-2xl text-sm font-medium font-display transition-all duration-300 hover:scale-105 border border-green-600/50 hover:border-green-500"
+                    >
+                      Login as Investor
+                    </Link>
+
+                    {/* Signup */}
                     <button
                       onClick={() => {
                         setAuthModalType("signup");
@@ -218,6 +225,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       >
                         Log In
                       </button>
+
+                      {/* ✅ Investor Login Link (mobile) */}
+                      <Link
+                        to="/investor-login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-center text-green-400 hover:text-white hover:bg-green-700/60 py-3.5 px-5 rounded-2xl text-base font-medium font-display transition-all duration-300 border border-green-600/50 hover:border-green-500"
+                      >
+                        Login as Investor
+                      </Link>
+
                       <button
                         onClick={() => {
                           setAuthModalType("signup");

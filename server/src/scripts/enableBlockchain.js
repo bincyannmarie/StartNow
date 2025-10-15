@@ -4,7 +4,7 @@ import Startup from "../models/startup.model.js";
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/StartNow";
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/pitchscore";
 
 async function enableBlockchainForAllStartups() {
   try {

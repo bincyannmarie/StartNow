@@ -7,7 +7,7 @@ import Proposal from "../models/proposal.model.js";
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/StartNow";
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/pitchscore";
 
 // Sample users data
 const sampleUsers = [

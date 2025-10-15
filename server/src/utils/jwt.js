@@ -1,22 +1,34 @@
 import jwt from "jsonwebtoken";
 
-// Generate JWT token
-export const generateToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+// ✅ Extract token from Authorization header
+export const extractToken = (req) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
+  return authHeader.split(" ")[1];
 };
 
-// Verify JWT token
+// ✅ Verify JWT token using the same secret as in login
 export const verifyToken = (token) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET not defined in environment variables");
+  }
   return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-// Extract token from request headers
-export const extractToken = (req) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    return authHeader.substring(7);
+// ✅ Create JWT token (used when user logs in)
+export const generateToken = (user) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET not defined in environment variables");
   }
-  return null;
+  return jwt.sign(
+    {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isVerified: user.isVerified,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 };

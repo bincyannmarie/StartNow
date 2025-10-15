@@ -1,4 +1,4 @@
-# 🚀 StartNow - Web3 Decentralized Startup Launchpad
+# 🚀 PitchScore - Web3 Decentralized Startup Launchpad
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -101,7 +101,7 @@ npm install
 **Server (.env)**
 
 ```env
-MONGODB_URI=mongodb+srv://admin:admin123@cluster0.f7bzzax.mongodb.net/StartNow
+MONGODB_URI=mongodb+srv://admin:admin123@cluster0.f7bzzax.mongodb.net/pitchscore
 JWT_SECRET=your-jwt-secret-key
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret

@@ -11,6 +11,8 @@ import { StartupProvider } from "./contexts/StartupContext";
 import { WalletProvider } from "./contexts/WalletContext";
 import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
 import { Network } from "@aptos-labs/ts-sdk";
+import InvestorLogin from "./pages/InvestorLogin";
+import InvestorDashboard from "./pages/InvestorDashboard";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
                     element={<GenerateProposal />}
                   />
                   <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="/investor-login" element={<InvestorLogin />} />
+                  <Route path="/investor-dashboard" element={<InvestorDashboard />} />
                 </Routes>
               </Layout>
             </Router>
@@ -47,3 +51,5 @@ function App() {
 }
 
 export default App;
+
+
