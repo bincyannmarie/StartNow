@@ -155,7 +155,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 ) : (
                   <>
                     <span className="text-gray-300 text-sm font-medium font-display mr-4">
-                      Welcome, {user?.name || "User"}!
+                      Welcome {user?.name || "User"}!
                     </span>
                     <button
                       onClick={logout}

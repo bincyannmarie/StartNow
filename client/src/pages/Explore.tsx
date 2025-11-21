@@ -43,7 +43,7 @@ interface StartupProject {
 
 const Explore: React.FC = () => {
   const navigate = useNavigate();
-  const { startupProjects, loading, error } = useStartup();
+  const { startupProjects, loading } = useStartup();
   const { address, signAndSubmitTransaction, connected } = useCustomWallet();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("all");
@@ -138,7 +138,7 @@ Your investment is now secured in the smart contract and will be released based 
             </div>
           )}
 
-          {/* Error State */}
+          {/* Error State - Hidden (Sample data fallback is fine)
           {error && !loading && (
             <div className="flex items-center justify-center min-h-96">
               <div className="text-center">
@@ -153,6 +153,7 @@ Your investment is now secured in the smart contract and will be released based 
               </div>
             </div>
           )}
+          */} 
 
           {/* Main Content */}
           {!loading && (

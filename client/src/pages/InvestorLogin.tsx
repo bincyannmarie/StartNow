@@ -1,86 +1,111 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+
+// 🔐 Demo investor credentials (frontend-only fallback)
+const DEMO_EMAIL = "jennifer.walsh@venture.capital";
+const DEMO_PASSWORD = "password123";
 
 export default function InvestorLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(DEMO_EMAIL);
+  const [password, setPassword] = useState(DEMO_PASSWORD);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/login`,
-        { email, password },
-        { withCredentials: true }
-      );
+      // 🚨 EMERGENCY DEMO MODE: no backend, check creds on frontend
+      console.log("[InvestorLogin] Using frontend-only demo login");
 
-      // If success
-      if (res.data?.success) {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role", res.data.user.role);
+      if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+        const fakeUser = {
+          _id: "demo-investor-id",
+          name: "Jennifer Walsh",
+          email: DEMO_EMAIL,
+          role: "investor",
+        };
 
-        if (res.data.user.role === "investor") {
-          navigate("/investor-dashboard");
-        } else {
-          setError("You are not registered as an investor.");
-        }
-      } else {
-        setError("Invalid credentials.");
+        const fakeToken = "demo-investor-token";
+
+        // Mimic real auth flow
+        localStorage.setItem("token", fakeToken);
+        localStorage.setItem("user", JSON.stringify(fakeUser));
+
+        toast.success("Logged in as investor (demo)!");
+        navigate("/investor-dashboard");
+        return;
       }
-    } catch (err: any) {
-      console.error("Login error:", err);
-      setError("Login failed. Please check your credentials or server connection.");
+
+      toast.error("Invalid demo investor credentials.");
+    } catch (err) {
+      console.error("[InvestorLogin] demo login error:", err);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-50">
-      <form
-        onSubmit={handleLogin}
-        className="p-6 bg-white rounded-xl shadow-md w-80"
-      >
-        <h1 className="text-2xl font-bold mb-4 text-center">Investor Login</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-gray-900/80 border border-gray-700/60 rounded-3xl shadow-2xl shadow-black/40 p-8 backdrop-blur-xl">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-extrabold text-white mb-2">
+            💼 Investor Login
+          </h1>
+          <p className="text-gray-400 text-sm">
+            Access curated startup pitches and manage your interests.
+          </p>
+        </div>
 
-        {error && (
-          <p className="text-red-500 text-sm text-center mb-3">{error}</p>
-        )}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Investor Email
+            </label>
+            <input
+              type="email"
+              required
+              className="w-full rounded-2xl bg-gray-800/70 border border-gray-700 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder-gray-500"
+              placeholder="you@investor.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          required
-          className="border p-2 w-full mb-3 rounded"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          required
-          className="border p-2 w-full mb-3 rounded"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              className="w-full rounded-2xl bg-gray-800/70 border border-gray-700 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent placeholder-gray-500"
+              placeholder="********"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-2 rounded text-white ${
-            loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
-          }`}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-2xl bg-green-500 hover:bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed text-gray-900 font-semibold text-sm shadow-lg shadow-green-500/30 transition-all duration-200 hover:-translate-y-0.5"
+          >
+            {loading ? "Logging in..." : "Login as Investor"}
+          </button>
+
+          <p className="text-xs text-gray-500 text-center mt-2">
+            Demo investor:
+            <br />
+            <span className="font-mono text-gray-300">
+              jennifer.walsh@venture.capital / password123
+            </span>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

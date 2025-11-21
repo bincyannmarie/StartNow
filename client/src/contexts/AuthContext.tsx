@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = (email: string) => {
     // Simple mock authentication - in real app, this would call an API
     setIsLoggedIn(true);
-    setUser({ name: 'John Doe', email });
+    setUser({ name: 'Back', email });
   };
 
   const signup = (name: string, email: string) => {

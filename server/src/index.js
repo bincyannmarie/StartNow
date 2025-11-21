@@ -1,14 +1,17 @@
+// server/src/index.js
 import "dotenv/config";
 import app from "./app.js";
 import { connectDB } from "./db/connectDB.js";
 import authRouter from "./routes/auth.route.js";
 import startupRouter from "./routes/startup.route.js";
 import investmentRouter from "./routes/investment.route.js";
-import investorRoutes from "./routes/investor.js"; // ✅ move this import up
+import investorRouter from "./routes/investor.route.js";
 
-const PORT = process.env.PORT || 8080;
+// Use 5099 to avoid the old 8080 weirdness
+const PORT = 5099;
 
-// Connect to database
+/* -------------------------- 🔗 Connect to MongoDB -------------------------- */
+
 connectDB()
   .then(() => {
     console.log("MongoDB connected successfully");
@@ -18,7 +21,15 @@ connectDB()
     process.exit(1);
   });
 
-// Health check route
+/* ------------------------ 🧾 Simple request logger ------------------------ */
+
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
+/* ---------------------------- ❤️ Health checks ---------------------------- */
+
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -27,13 +38,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// ✅ Register API Routes before app.listen()
-app.use("/auth", authRouter);
-app.use("/api/startups", startupRouter);
-app.use("/api/investments", investmentRouter);
-app.use("/api/investor", investorRoutes); // ✅ investor routes active now
-
-// Health check for API
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
@@ -42,15 +46,24 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 handler
-app.use("/*path", (req, res) => {
+/* ----------------------------- 📦 API Routes ------------------------------ */
+
+app.use("/auth", authRouter);
+app.use("/api/startups", startupRouter);
+app.use("/api/investments", investmentRouter);
+app.use("/api/investor", investorRouter);
+
+/* ---------------------------- 404 (Not Found) ----------------------------- */
+
+app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: `Route ${req.originalUrl} not found`,
   });
 });
 
-// Global error handler
+/* --------------------------- Global Error Handler ------------------------- */
+
 app.use((err, req, res, next) => {
   console.error("Error:", err);
 
@@ -64,13 +77,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-import investorRouter from "./routes/investor.route.js";
-app.use("/api/investor", investorRouter);
+/* ------------------------------ 🚀 Start app ------------------------------ */
 
 app.listen(PORT, () => {
   console.log(`🎯 Server is running on port ${PORT}`);
   console.log(
-    `📱 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`
+    `📱 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5180"}`
   );
   console.log(`🔑 Environment: ${process.env.NODE_ENV || "development"}`);
 });
